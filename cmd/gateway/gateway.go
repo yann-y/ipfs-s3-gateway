@@ -22,8 +22,10 @@ import (
 	// NAS
 	_ "github.com/minio/minio/cmd/gateway/nas"
 
-	// S3
+	// Web3
 	_ "github.com/minio/minio/cmd/gateway/s3"
+	// web3
+	_ "github.com/minio/minio/cmd/gateway/web3"
 	// gateway functionality is frozen, no new gateways are being implemented
 	// or considered for upstream inclusion at this point in time. if needed
 	// please keep a fork of the project.

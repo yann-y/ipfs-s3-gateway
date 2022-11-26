@@ -152,3 +152,5 @@ clean: ## cleanup all generated assets
 	@rm -rvf build
 	@rm -rvf release
 	@rm -rvf .verify*
+mysql-db:
+	gentool -dsn "root:mysql123456@tcp(127.0.0.1:3306)/oss?charset=utf8mb4&parseTime=True&loc=Local"  --tables="" -outPath internal/db/mysql/query

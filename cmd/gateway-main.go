@@ -155,11 +155,11 @@ func ValidateGatewayArguments(serverAddr, endpointAddr string) error {
 
 // StartGateway - handler for 'minio gateway <name>'.
 func StartGateway(ctx *cli.Context, gw Gateway) {
-	signal.Notify(globalOSSignalCh, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(globalOSSignalCh, syscall.SIGTERM, syscall.SIGQUIT)
 
 	go handleSignals()
 
-	signal.Notify(globalOSSignalCh, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(globalOSSignalCh, syscall.SIGTERM, syscall.SIGQUIT)
 	// This is only to uniquely identify each gateway deployments.
 	globalDeploymentID = env.Get("MINIO_GATEWAY_DEPLOYMENT_ID", mustGetUUID())
 	xhttp.SetDeploymentID(globalDeploymentID)
