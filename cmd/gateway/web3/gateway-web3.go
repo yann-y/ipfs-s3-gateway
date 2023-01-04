@@ -293,8 +293,7 @@ func (o *objects) MakeBucketWithLocation(ctx context.Context, bucket string, opt
 }
 
 func (o *objects) GetBucketInfo(ctx context.Context, bucket string, opts minio.BucketOptions) (bucketInfo minio.BucketInfo, err error) {
-	//TODO implement me
-	panic("implement me")
+	return o.db.GetBucketInfo(ctx, bucket, opts)
 }
 
 func (o *objects) ListBuckets(ctx context.Context, opts minio.BucketOptions) (buckets []minio.BucketInfo, err error) {
@@ -308,12 +307,33 @@ func (o *objects) DeleteBucket(ctx context.Context, bucket string, opts minio.De
 
 func (o *objects) ListObjects(ctx context.Context, bucket, prefix, marker, delimiter string, maxKeys int) (result minio.ListObjectsInfo, err error) {
 	//TODO implement me
-	panic("implement me")
+	return minio.ListObjectsInfo{
+		IsTruncated: false,
+		Objects:     nil,
+		Prefixes:    nil,
+	}, nil
 }
 
+// ListObjectsV2 lists all blobs in bucket filtered by prefix
 func (o *objects) ListObjectsV2(ctx context.Context, bucket, prefix, continuationToken, delimiter string, maxKeys int, fetchOwner bool, startAfter string) (result minio.ListObjectsV2Info, err error) {
-	//TODO implement me
-	panic("implement me")
+	marker := continuationToken
+	if marker == "" {
+		marker = startAfter
+	}
+
+	loi, err := o.ListObjects(ctx, bucket, prefix, marker, delimiter, maxKeys)
+	if err != nil {
+		return result, err
+	}
+
+	listObjectsV2Info := minio.ListObjectsV2Info{
+		IsTruncated:           loi.IsTruncated,
+		ContinuationToken:     continuationToken,
+		NextContinuationToken: loi.NextMarker,
+		Objects:               loi.Objects,
+		Prefixes:              loi.Prefixes,
+	}
+	return listObjectsV2Info, err
 }
 
 func (o *objects) ListObjectVersions(ctx context.Context, bucket, prefix, marker, versionMarker, delimiter string, maxKeys int) (result minio.ListObjectVersionsInfo, err error) {
@@ -408,7 +428,7 @@ func (o *objects) SetBucketPolicy(ctx context.Context, s string, policy *policy.
 
 func (o *objects) GetBucketPolicy(ctx context.Context, s string) (*policy.Policy, error) {
 	//TODO implement me
-	panic("implement me")
+	return &policy.Policy{}, nil
 }
 
 func (o *objects) DeleteBucketPolicy(ctx context.Context, s string) error {

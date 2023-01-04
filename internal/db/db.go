@@ -51,7 +51,6 @@ func NewObjectDB() *ObjectDB {
 }
 
 func (db *ObjectDB) ListBuckets(ctx context.Context, opts minio.BucketOptions) (buckets []minio.BucketInfo, err error) {
-	//TODO implement me
 	b := query.Use(db.db).TNsBucket
 	bs, err := b.WithContext(ctx).Find()
 	if err != nil {
@@ -69,4 +68,15 @@ func (db *ObjectDB) MakeBucket(ctx context.Context, bucketName string, options m
 	bucket := &model.TNsBucket{Name: bucketName, CreatedAt: time.Now(), Location: options.Region}
 	b := query.Use(db.db).TNsBucket
 	return b.WithContext(ctx).Create(bucket)
+}
+
+func (db *ObjectDB) GetBucketInfo(ctx context.Context, bucket string, opts minio.BucketOptions) (bucketInfo minio.BucketInfo, err error) {
+	b := query.Use(db.db).TNsBucket
+	first, err := b.WithContext(ctx).Where(b.Name.Eq(bucket)).First()
+	if err != nil {
+		return minio.BucketInfo{}, err
+	}
+	bucketInfo.Name = first.Name
+	bucketInfo.Created = first.CreatedAt
+	return
 }
