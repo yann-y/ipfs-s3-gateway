@@ -130,7 +130,7 @@ func newApp(name string) *cli.App {
 	}
 
 	// Register all commands.
-	registerCommand(serverCmd)
+	//registerCommand(serverCmd)
 	registerCommand(gatewayCmd)
 
 	// Set up app.
